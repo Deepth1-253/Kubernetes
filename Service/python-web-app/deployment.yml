@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-deployment
+  labels:
+    app: python-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: Python-app
+  template:
+    metadata:
+      labels:
+        app: Python-app
+    spec:
+      containers:
+        - name: Python-sample-app
+          image: deepthi/Python-sample-app:v1
+          ports:
+            - containerPort: 8000
