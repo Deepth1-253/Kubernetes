@@ -1,0 +1,66 @@
+steps to install Prometheus and Grafana on minikube
+1. Install minikube
+
+2. Install helm
+   sudo snap install helm --classic 
+   or
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+3. Install Prometheus using helm chart
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm repo update
+   helm install prometheus prometheus-community/prometheus
+
+4. Expose Prometheus service if needed
+   kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext
+
+5. Install Grafana using helm chart
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm repo update
+    helm install grafana grafana/grafana
+
+6. Expose Grafana service if needed
+    kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
+
+7. Access Prometheus and Grafana using the following commands (if you are using docker driver instead virtualbox or hyperkit drivers)
+    minikube service prometheus-server-ext
+    minikube service grafana-ext
+
+8. Access Prometheus and Grafana using the following URLs
+    http://<prometheus-server-ext-IP>:<prometheus-server-ext-Port>
+    http://<grafana-ext-IP>:<grafana-ext-Port>
+
+9. Login to Grafana using the following credentials
+    username: admin
+    password: <get the password after running the following command>
+    kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+10. Add Prometheus as a data source in Grafana
+    URL: http://prometheus-server:80
+
+11. Import dashboards in Grafana
+    1. Click on the "+" icon on the left side of the screen
+    2. Click on "Import"
+    3. Enter the dashboard ID
+    4. Click on "Load"
+    5. Select the Prometheus data source
+    6. Click on "Import"
+
+12. Create alerts in Grafana
+    1. Click on the "Alerting" tab
+    2. Click on "Notification channels"
+    3. Click on "Add channel"
+    4. Enter the channel details
+    5. Click on "Save"
+    6. Click on "Notification channels"
+    7. Click on "Add notification"
+    8. Enter the notification details
+    9. Click on "Save"
+    10. Click on "Alerts"
+    11. Click on "Create alert"
+    12. Enter the alert details
+    13. Click on "Save"
+
+13. Monitor the alerts in Grafana
+
+14. Stop minikube
+   
